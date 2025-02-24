@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+plt.style.use('dark_background')
+
 # Spline fitting using points
 def spline_fitting_points(t, c):
     T = np.array([
@@ -98,10 +100,10 @@ def cr_spline(t, c, d):
     fit_y = np.concatenate((fit_y), axis=None)
 
     fig = plt.subplot()
-    fig.scatter(t, c, label='data')
+    fig.scatter(t, c, label='data', color='#81B1D2')
     xt = np.arange(max(t)+1)
     yt = (y[0] * xt**3) + (y[1] * xt**2) + (y[2] * xt) + y[3]
-    fig.plot(fit_x, fit_y, label='spline fit')
+    fig.plot(fit_x, fit_y, label='spline fit', color='#FA8174')
 
     plt.show()
     return ys
