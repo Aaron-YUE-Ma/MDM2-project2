@@ -74,7 +74,6 @@ def grad(start, end, t, c):
 def cr_spline(t, c, d):
     '''
     the gradient (d) only wants two inputs like [x, y] for the start and end
-    needs fixing: plots random graphs before correct one
     '''
     d = grad(d[0], d[1], t, c)
     ys = []
