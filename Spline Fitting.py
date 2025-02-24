@@ -115,3 +115,6 @@ d = [0, -1]
 
 y = cr_spline(t, c, d)
 # print(y)
+
+# https://www.youtube.com/watch?v=YMl25iCCRew
+# https://www.youtube.com/watch?v=DLsqkWV6Cag
