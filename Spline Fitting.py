@@ -77,7 +77,6 @@ def cr_spline(t, c, d):
     '''
     the gradient (d) only wants two inputs like [x, y] for the start and end
     '''
-    d = grad(d[0], d[1], t, c)
     ys = []
     fit_x = []
     fit_y = []
@@ -112,7 +111,7 @@ def cr_spline(t, c, d):
 
 t = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 c = [4, 4, 2, 2, 3.5, 1.5, 5, 2, 5, 4.5, 4]
-d = [0, -1]
+d = grad(0, -1, t, c)
 
 y = cr_spline(t, c, d)
 # print(y)
