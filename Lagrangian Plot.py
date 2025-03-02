@@ -1,9 +1,15 @@
 from sympy import symbols, nsolve, sin, pi # solve
-import matplotlib.pyplot as plt
+import numpy as np
 import math
+import matplotlib.pyplot as plt
+from matplotlib import animation
+from IPython.display import HTML
 
 plt.style.use('dark_background')
 
+M = 1
+L = 1
+g = 9.81
 
 def step(p_k, theta_old, h):
     '''
@@ -50,6 +56,7 @@ def solve(theta_0, P_0, t, h):
 theta, P = solve(pi/3, 0, 10, 0.01)
 t = [(n*0.01) for n in range(1001)]
 
+
 fig1, ax = plt.subplots()
 
 ax.plot(theta, P, color='#81B1D2')
@@ -67,6 +74,52 @@ axs[1].set(title='', xlabel='Time (s)', ylabel='Momentum ()')
 
 plt.show()
 
+
+x = [(L * math.sin(theta_i)) for theta_i in theta]
+y = [(-L * math.cos(theta_i)) for theta_i in theta]
+x0, y0 = x[0], y[0]
+
+
+fig3, axs = plt.subplots(1, 2, figsize=(12, 6))
+
+axs[0].set_aspect('equal')
+
+line, = axs[0].plot([0, x0], [0, y0], lw=3, c='white')
+bob_radius = 0.08  # Radius of the bob
+circle = axs[0].add_patch(plt.Circle((x0, y0), bob_radius, fc='white', zorder=3))
+
+axs[0].set_xlim([-L-0.5, L+0.5])
+axs[0].set_ylim([-L-0.5, L])
+
+theta_line, = axs[1].plot(t, theta, c='#81B1D2')
+axs[1].set_xlim([0, max(t)])
+axs[1].set_ylim([-np.pi, np.pi]) # [-np.pi, np.pi]
+axs[1].set_xlabel('Time (s)')
+axs[1].set_ylabel('Theta (rad)')
+axs[1].set_title('Theta vs. Time')
+
+def animate(i):
+    """Update the animation at frame i."""
+    line.set_data([0, x[i]], [0, y[i]])
+    circle.set_center((x[i], y[i]))
+
+    theta_line.set_data(t[:i], theta[:i])
+
+nsteps = len(x)
+nframes = nsteps
+dt = t[1] - t[0]
+interval = dt * 1000
+
+ani = animation.FuncAnimation(fig3, animate, frames=nframes, repeat=True, interval=interval)
+
+plt.tight_layout()
+plt.show()
+
+ani = animation.FuncAnimation(fig3, animate, frames=nframes, repeat=True, interval=interval, blit=False)
+
+ani.save('pendulum_animation.gif', writer='pillow', fps=30)
+
+plt.close(fig3)
 
 # test code
 '''
