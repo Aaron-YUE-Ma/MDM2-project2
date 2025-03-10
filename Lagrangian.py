@@ -4,6 +4,7 @@ import math
 import matplotlib.pyplot as plt
 from matplotlib import animation
 from IPython.display import HTML
+from scipy.interpolate import CubicSpline
 
 plt.style.use('dark_background')
 
@@ -11,7 +12,7 @@ plt.style.use('dark_background')
 # Initial conditions 
 theta_0 = pi/3
 theta_dot_0 = 0
-t = 10 # total time
+t = 2.5 # total time
 h = 0.01
 
 M = 1
@@ -97,8 +98,6 @@ def grad(start, end, t, c):
 
 def cr_spline(t, c, d):
     e = grad(-8.49258200155620, 6.14330506465390, t, d)
-    print(e[1])
-    print(e[-2])
 
     ys = []
     zs = []
@@ -145,64 +144,61 @@ def total_energy(theta, theta_dot, m=M, L=L, g=g):
 
 
 # Data collection
-time = [(n*0.01) for n in range(1001)]
+time = [(n*0.01) for n in range(251)]
 theta, P = solve(theta_0, theta_dot_0, t, h)
 
-time_fit, theta_fit, P_fit = cr_spline(time, theta, P)  # [0:215]
+# time_fit, theta_fit, P_fit = cr_spline(time, theta, P)  # [0:215]
+theta_fit = CubicSpline(time, theta) # , bc_type='clamped'
+P_fit = CubicSpline(time, P)
+
+time_f = np.arange(0, t, 0.001)
+theta_f = theta_fit(time_f)
+P_f = P_fit(time_f)
 
 energy = total_energy(theta, P)
-energy_fit = total_energy(theta_fit, P_fit)
+energy_fit = total_energy(theta_f, P_f)
 
 
 # Graphs
-fig1, ax = plt.subplots(figsize=(12, 6))
+fig1, ax = plt.subplots(figsize=(6, 6))
 '''
-Phase Space plot
+Phase plot ~ Lagrange
 '''
 
-ax.plot(theta, P, color='#81B1D2')
-ax.set(title='Phase Space', xlabel='Position', ylabel='Momentum')
+ax.scatter(theta, P, marker='.', color='#81B1D2')
+ax.set_xlabel('Position (Rad))', fontsize=14)
+ax.set_ylabel('Momentum (Rad/s))', fontsize=14)
 
+fig1.savefig('Phase plot ~ Lagrange.png')
 plt.show()
 
 
-fig2, axs = plt.subplots(2, figsize=(12, 6))
+fig2, ax = plt.subplots(figsize=(8, 6))
 '''
-Theta/theta dot time plot
+Energy plot ~ Lagrange
 '''
 
-axs[0].scatter(time, theta, marker='x', color='#81B1D2')
-axs[0].plot(time_fit, theta_fit, color='#FA8174')
-axs[0].set(title='', xlabel='Time (s)', ylabel='Angle (Rad)')
-axs[1].scatter(time, P, marker='x', color='#FA8174')
-axs[1].plot(time_fit, P_fit, color='#81B1D2')
-axs[1].set(title='', xlabel='Time (s)', ylabel='Momentum ()')
+ax.scatter(time, energy, marker='.', color='#FA8174')
+ax.set_xlabel('Time (Seconds)', fontsize=14)
+ax.set_ylabel('Energy (Joules)', fontsize=14)
 
-
+fig2.savefig('Energy plot ~ Lagrange.png')
 plt.show()
 
 
-fig3, ax = plt.subplots(figsize=(12, 6))
+fig3, ax = plt.subplots(figsize=(8, 6))
 '''
-Spline fitted lagrangian
+Fitted energy plot ~ Lagrange
 '''
 
-ax.scatter(time, theta, label='data', marker='x', color='#81B1D2')
-ax.plot(time_fit, theta_fit, label='spline fit', color='#FA8174')
-ax.set(title='', xlabel='Time (s)', ylabel='Angle (Rad)')
+ax.plot(time_f, energy_fit, color='#FA8174')
+ax.set_xlabel('Time (Seconds)', fontsize=14)
+ax.set_ylabel('Energy (Joules)', fontsize=14)
 
+fig3.savefig('Fitted energy plot ~ Lagrange.png')
 plt.show()
 
 
-fig4, ax = plt.subplots(figsize=(12, 6))
-'''
-Total energy plot
-'''
-
-ax.plot(time, energy, color='#81B1D2')
-ax.plot(time_fit, energy_fit, color='#FA8174') 
-
-plt.show()
 
 
 
@@ -215,7 +211,7 @@ plt.show()
 #
 #
 #
-
+'''
 x = [(L * math.sin(theta_i)) for theta_i in theta]
 y = [(-L * math.cos(theta_i)) for theta_i in theta]
 x0, y0 = x[0], y[0]
@@ -233,7 +229,7 @@ axs[0].set_xlim([-L-0.5, L+0.5])
 axs[0].set_ylim([-L-0.5, L])
 
 theta_line, = axs[1].plot(time, theta, c='#81B1D2')
-axs[1].set_xlim([0, max(t)])
+axs[1].set_xlim([0, max(time)])
 axs[1].set_ylim([-np.pi, np.pi]) # [-np.pi, np.pi]
 axs[1].set_xlabel('Time (s)')
 axs[1].set_ylabel('Theta (rad)')
@@ -250,7 +246,7 @@ nsteps = len(x)
 nframes = nsteps
 dt = t[1] - t[0]
 interval = dt * 1000
-
+'''
 '''ani = animation.FuncAnimation(fig3, animate, frames=nframes, repeat=True, interval=interval)
 
 plt.tight_layout()
