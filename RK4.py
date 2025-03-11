@@ -8,7 +8,7 @@ plt.style.use('dark_background')
 m = 1.0
 L = 1.0
 g = 9.81
-dt = 0.001
+dt = 0.01
 total_time = 2.5  # Simulation duration
 n_steps = int(total_time / dt)
 time = np.linspace(0, total_time, n_steps+1)
