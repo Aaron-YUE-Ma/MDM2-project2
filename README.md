@@ -1,3 +1,2 @@
-# MDM2-project2
-
-Group 10
+# MDM2 REP2
+Group 10 ~ Making better integrators
